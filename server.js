@@ -41,7 +41,7 @@ app.get("/", (req, res)=>{
 //     // });
 // });
 
-//add product controller
+
 app.post("/addPizza",async (req,res)=>{
 
     const {name , varients, prices, category, image, description} = req.body;
