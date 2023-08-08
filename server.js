@@ -1,20 +1,16 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const db = require('./db');
-const Pizza = require('./models/pizzaModel');
-
-
+const db = require("./db");
+const Pizza = require("./models/pizzaModel");
+const router = require("./routes/pizzasRoute");
 
 app.use(express.json());
-const pizzasRoute = require('./routes/pizzasRoute');
 
-app.use('/api/pizzas/', pizzasRoute);
-
-app.get("/", (req, res)=>{
-    res.send("Server working");
+app.get("/", (req, res) => {
+  res.send("Server working");
 });
 
-
+app.use("/api/pizzas", router);
 
 // app.get('/getpizzas', async (req, res)=>{
 //     let pizza
@@ -31,7 +27,7 @@ app.get("/", (req, res)=>{
 //     else{
 //         res.send("No pizza found")
 //     }
-    
+
 //     // Pizza.find({}, (err, docs)=>{
 //     //     if(err){
 //     //         console.log("err");
@@ -41,31 +37,28 @@ app.get("/", (req, res)=>{
 //     // });
 // });
 
+app.post("/addPizza", async (req, res) => {
+  const { name, varients, prices, category, image, description } = req.body;
 
-app.post("/addPizza",async (req,res)=>{
+  const newPizza = new Pizza({
+    name,
+    varients,
+    prices,
+    category,
+    image,
+    description,
+  });
 
-    const {name , varients, prices, category, image, description} = req.body;
+  try {
+    await newPizza.save();
+  } catch (error) {
+    console.log(error);
+  }
 
-    const newPizza = new Pizza({
-        name,
-        varients,
-        prices,
-        category,
-        image,
-        description
-    })
-
-    try {
-        await newPizza.save()   
-    } catch (error) {
-        console.log(error); 
-    }
-
-    res.send("successed!!!")
-})
+  res.send("successed!!!");
+});
 //add product controller end
 
 const port = process.env.PORT || 8000;
 
-app.listen(port, () => 'Server running on port 8000');
-
+app.listen(port, () => "Server running on port 8000");
